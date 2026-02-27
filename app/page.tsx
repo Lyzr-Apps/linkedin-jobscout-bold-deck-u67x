@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
-import { FiRefreshCw } from 'react-icons/fi'
+import { FiRefreshCw, FiCheck } from 'react-icons/fi'
 import { BiTargetLock } from 'react-icons/bi'
 
 import PreferencesPanel from './sections/PreferencesPanel'
@@ -56,69 +56,153 @@ interface ChatMessage {
 const SAMPLE_DATA: ManagerResponse = {
   ranked_matches: [
     {
-      job_title: 'Senior Frontend Engineer',
-      company_name: 'TechCorp Inc.',
-      location: 'San Francisco, CA (Remote)',
-      match_score: 92,
+      job_title: 'Associate Software Engineer',
+      company_name: 'Rockwell Automation',
+      location: 'Pune, Maharashtra',
+      match_score: 88,
       fit_category: 'Excellent Match',
-      match_reasoning: 'Strong alignment with React/TypeScript expertise. 5+ years experience matches requirement. Previous startup experience valued by the team.',
-      skill_gaps: 'GraphQL experience preferred but not required. Familiarity with their proprietary design system would need onboarding.',
-      key_matches: 'React, TypeScript, Next.js, CI/CD pipelines, team leadership experience, agile methodology',
-      posting_url: 'https://linkedin.com/jobs/view/123456',
-      experience_level: 'Senior',
+      match_reasoning: 'Strong alignment with Python and software engineering fundamentals. Entry-level role (0-1 years) matches fresher profile. Company values strong CS fundamentals and problem-solving skills which align with your academic background.',
+      skill_gaps: 'Industrial automation domain knowledge. C++ experience preferred for embedded components.',
+      key_matches: 'Python, SQL, software engineering fundamentals, data structures, OOP, REST APIs, agile methodology',
+      posting_url: 'https://in.linkedin.com/jobs/view/associate-software-engineer-at-rockwell-automation-4376000001',
+      experience_level: 'Entry',
     },
     {
-      job_title: 'Full Stack Developer',
-      company_name: 'DataFlow Systems',
-      location: 'New York, NY',
-      match_score: 78,
+      job_title: 'Software Engineer I',
+      company_name: 'Wipro',
+      location: 'Pune, Maharashtra',
+      match_score: 82,
+      fit_category: 'Excellent Match',
+      match_reasoning: 'SE-I role designed for freshers with 0-1 years experience. Python and SQL requirements directly match your skill set. Large-scale enterprise projects provide good learning exposure.',
+      skill_gaps: 'Enterprise Java frameworks (Spring Boot). Specific domain knowledge depends on project allocation.',
+      key_matches: 'Python, SQL, software engineering, problem-solving, data structures, algorithms, unit testing',
+      posting_url: 'https://in.linkedin.com/jobs/view/software-engineer-i-at-wipro-4376000002',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Python Backend Developer - Junior',
+      company_name: 'Teamnest Employee Services',
+      location: 'Mumbai, Maharashtra',
+      match_score: 85,
+      fit_category: 'Excellent Match',
+      match_reasoning: 'Python/Django full stack role at an HR tech startup. Direct match for Python backend skills. Startup environment provides broad exposure. Resume shows relevant Python project experience.',
+      skill_gaps: 'Django framework specifics. HR tech domain understanding. Frontend React/Angular experience would be a plus.',
+      key_matches: 'Python, Django, REST APIs, SQL, PostgreSQL, backend development, API design',
+      posting_url: 'https://in.linkedin.com/jobs/view/python-django-developer-at-teamnest-4370640361',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Associate Software Engineer, Onboarding',
+      company_name: 'FlexTrade Systems',
+      location: 'Pune, Maharashtra',
+      match_score: 74,
       fit_category: 'Good Match',
-      match_reasoning: 'Solid match on frontend skills. Backend Node.js experience aligns well. Missing some specific cloud infrastructure experience they prefer.',
-      skill_gaps: 'AWS Lambda and DynamoDB expertise. Experience with microservices architecture at scale.',
-      key_matches: 'JavaScript, Node.js, React, REST APIs, PostgreSQL, Docker',
-      posting_url: 'https://linkedin.com/jobs/view/789012',
-      experience_level: 'Mid-Senior',
+      match_reasoning: 'Associate-level role in fintech. Python and SQL skills align well. Onboarding team role provides structured learning. FlexTrade is a recognized name in financial technology.',
+      skill_gaps: 'Financial markets domain knowledge. Java/Scala for some trading system components. Real-time data processing experience.',
+      key_matches: 'Python, SQL, software engineering, problem-solving, testing, debugging, version control (Git)',
+      posting_url: 'https://in.linkedin.com/jobs/view/associate-software-engineer-at-flextrade-4376000004',
+      experience_level: 'Entry',
     },
     {
-      job_title: 'UI/UX Engineer',
-      company_name: 'DesignFirst Agency',
-      location: 'Austin, TX (Hybrid)',
+      job_title: 'Python ML Engineer',
+      company_name: 'Infosys',
+      location: 'Bengaluru, Karnataka',
+      match_score: 79,
+      fit_category: 'Good Match',
+      match_reasoning: 'ML Engineer role using Python at a major IT services company. Your ML coursework and Python proficiency match the requirements. Infosys offers structured training programs for freshers.',
+      skill_gaps: 'Production ML deployment experience (MLflow, Kubeflow). Deep learning frameworks at scale. Cloud ML services (AWS SageMaker, Azure ML).',
+      key_matches: 'Python, machine learning fundamentals, scikit-learn, pandas, NumPy, SQL, data analysis',
+      posting_url: 'https://in.linkedin.com/jobs/view/python-ml-engineer-at-infosys-4376000005',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Backend Developer',
+      company_name: 'FactWise',
+      location: 'Mumbai, Maharashtra',
+      match_score: 77,
+      fit_category: 'Good Match',
+      match_reasoning: 'Backend role at a B2B procurement startup. Python and API development skills match. Startup environment with hands-on work from day one. Active hiring indicates immediate openings.',
+      skill_gaps: 'B2B procurement domain. Microservices architecture experience. Docker/Kubernetes for deployment.',
+      key_matches: 'Python, REST APIs, SQL, backend development, database design, Git, problem-solving',
+      posting_url: 'https://in.linkedin.com/jobs/view/backend-developer-at-factwise-4372275660',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Software Developer',
+      company_name: 'IBM',
+      location: 'Pune, Maharashtra',
+      match_score: 80,
+      fit_category: 'Excellent Match',
+      match_reasoning: 'Entry-level developer role at IBM. Strong alignment with Python and software engineering fundamentals. IBM provides excellent training infrastructure and career growth path for freshers.',
+      skill_gaps: 'IBM Cloud platform specifics. Enterprise software development practices at scale. Java may be required for some teams.',
+      key_matches: 'Python, SQL, software engineering, algorithms, cloud computing basics, agile, collaborative development',
+      posting_url: 'https://in.linkedin.com/jobs/view/software-developer-at-ibm-pune-4376000007',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Python GenAI Developer',
+      company_name: 'Infosys',
+      location: 'Bengaluru, Karnataka',
+      match_score: 72,
+      fit_category: 'Good Match',
+      match_reasoning: 'Generative AI developer position. Your Python skills and ML exposure are relevant. Cutting-edge domain with LLMs and prompt engineering. Infosys training bridges remaining gaps.',
+      skill_gaps: 'LLM fine-tuning experience. Prompt engineering. RAG architectures. LangChain/LlamaIndex frameworks.',
+      key_matches: 'Python, ML fundamentals, NLP basics, API development, data processing, analytical thinking',
+      posting_url: 'https://in.linkedin.com/jobs/view/python-genai-developer-at-infosys-4376000008',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Associate System Engineer',
+      company_name: 'IBM',
+      location: 'Mumbai, Maharashtra',
+      match_score: 71,
+      fit_category: 'Good Match',
+      match_reasoning: 'Systems engineering role blending software and infrastructure. Good fit for broad engineering fundamentals. IBM Mumbai location matches preference. Role involves scripting and automation.',
+      skill_gaps: 'Systems administration. Linux server management. Networking fundamentals. Shell scripting.',
+      key_matches: 'Python scripting, SQL, problem-solving, analytical skills, documentation, teamwork',
+      posting_url: 'https://in.linkedin.com/jobs/view/associate-system-engineer-at-ibm-4352504741',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Full Stack Developer (React + FastAPI)',
+      company_name: 'Volga Infotech',
+      location: 'Mumbai, Maharashtra',
+      match_score: 68,
+      fit_category: 'Good Match',
+      match_reasoning: 'Full stack role using Python FastAPI backend. Your Python backend skills match well. FastAPI is a modern Python framework that aligns with your Python proficiency. Mumbai location matches preference.',
+      skill_gaps: 'React frontend proficiency. FastAPI framework specifics. Full stack deployment (Docker, CI/CD).',
+      key_matches: 'Python, REST APIs, SQL, backend development, problem-solving, Git',
+      posting_url: 'https://in.linkedin.com/jobs/view/full-stack-developer-at-volga-infotech-4375243833',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Trainee Engineer',
+      company_name: 'Ascentt',
+      location: 'Pune, Maharashtra',
       match_score: 65,
-      fit_category: 'Partial Match',
-      match_reasoning: 'Frontend skills are relevant but this role leans heavily into design systems and Figma-to-code workflows. Less emphasis on application architecture.',
-      skill_gaps: 'Figma proficiency, design token management, accessibility auditing, animation libraries (Framer Motion).',
-      key_matches: 'CSS, responsive design, component libraries, React, attention to detail',
-      posting_url: 'https://linkedin.com/jobs/view/345678',
-      experience_level: 'Mid',
-    },
-    {
-      job_title: 'Backend Engineer',
-      company_name: 'CloudScale Labs',
-      location: 'Seattle, WA',
-      match_score: 41,
-      fit_category: 'Low Match',
-      match_reasoning: 'This role is primarily backend-focused with Go and Kubernetes. While general engineering skills transfer, the core technical stack does not align well.',
-      skill_gaps: 'Go programming, Kubernetes orchestration, distributed systems, gRPC, message queues (Kafka).',
-      key_matches: 'General software engineering practices, API design, testing methodologies',
-      posting_url: 'https://linkedin.com/jobs/view/901234',
-      experience_level: 'Senior',
-    },
-    {
-      job_title: 'React Native Developer',
-      company_name: 'MobileFirst Co.',
-      location: 'Remote (US)',
-      match_score: 73,
       fit_category: 'Good Match',
-      match_reasoning: 'React experience transfers well to React Native. Mobile development patterns differ but fundamentals are strong.',
-      skill_gaps: 'React Native specific APIs, mobile deployment pipelines (App Store, Play Store), native module bridging.',
-      key_matches: 'React, JavaScript, TypeScript, component architecture, state management, REST APIs',
-      posting_url: 'https://linkedin.com/jobs/view/567890',
-      experience_level: 'Mid',
+      match_reasoning: 'Trainee position specifically for fresh graduates. Low barrier to entry with on-the-job training. Pune location matches preference. Good starting point for building industry experience.',
+      skill_gaps: 'Specific technology stack to be determined. Industry project experience. Client-facing communication skills.',
+      key_matches: 'Programming fundamentals, Python, SQL, eagerness to learn, academic project experience',
+      posting_url: 'https://in.linkedin.com/jobs/view/trainee-engineer-at-ascentt-4376000011',
+      experience_level: 'Entry',
+    },
+    {
+      job_title: 'Python Backend Engineer, Associate',
+      company_name: 'BlackRock',
+      location: 'Gurgaon, Haryana',
+      match_score: 76,
+      fit_category: 'Good Match',
+      match_reasoning: 'Associate-level Python backend role at the world largest asset manager. Top global financial firm with excellent compensation. Python and SQL skills directly relevant. Strong brand value on resume.',
+      skill_gaps: 'Financial services domain. Distributed systems. Advanced Python patterns. Cloud infrastructure (Azure).',
+      key_matches: 'Python, SQL, backend development, REST APIs, data structures, algorithms, problem-solving',
+      posting_url: 'https://in.linkedin.com/jobs/view/python-backend-engineer-associate-at-blackrock-4376000012',
+      experience_level: 'Entry',
     },
   ],
-  total_analyzed: 24,
-  average_match_score: 69,
-  analysis_summary: 'Out of 24 jobs analyzed from your LinkedIn search, **5 top matches** were identified. Your strongest area is frontend development with React and TypeScript. Consider upskilling in cloud infrastructure (AWS/GCP) and backend technologies to increase your match rate for full-stack positions. The highest-scoring opportunity is at **TechCorp Inc.** with a 92% match.',
+  total_analyzed: 47,
+  average_match_score: 76,
+  analysis_summary: 'Out of **47 jobs** extracted from your LinkedIn search, **12 top matches** were identified and ranked against your resume.\n\n**Key findings:**\n- Your strongest matches are in **Python backend development** and **Associate Software Engineer** roles in Mumbai and Pune\n- **3 roles scored 80+** (Excellent Match): Rockwell Automation, Wipro SE-I, and Teamnest Python Developer\n- **ML/AI roles** at Infosys (Bengaluru) show good match on fundamentals but gaps in production ML deployment\n- **BlackRock** (Gurgaon) is a notable exception worth considering despite location -- top global firm with Python backend focus\n\n**Recommendations:**\n- Apply immediately to the top 3 Excellent Match roles in Pune/Mumbai\n- Upskill in Django/FastAPI frameworks to strengthen backend applications\n- Build a portfolio project demonstrating ML deployment to improve AI/ML role matches',
 }
 
 // --- ErrorBoundary ---
@@ -156,41 +240,102 @@ class ErrorBoundary extends React.Component<
 
 // --- Loading State Component ---
 function LoadingState({ progress, statusMessage }: { progress: number; statusMessage: string }) {
+  const phase1Done = progress > 45
+  const phase2Done = progress > 85
+
   return (
-    <div className="max-w-md mx-auto py-16 space-y-6">
+    <div className="max-w-lg mx-auto py-12 space-y-6">
+      {/* Header */}
       <div className="text-center space-y-2">
         <div className="h-12 w-12 border-2 border-ring border-t-transparent animate-spin mx-auto" />
-        <h3 className="text-base font-medium text-foreground">Analyzing Jobs</h3>
+        <h3 className="text-base font-medium text-foreground">Analyzing Jobs Against Your Resume</h3>
         <p className="text-sm text-muted-foreground">{statusMessage}</p>
       </div>
+
       <Progress value={progress} className="h-1.5" />
-      <div className="space-y-3">
-        {[
-          { label: 'Extracting jobs from LinkedIn...', threshold: 30 },
-          { label: 'Analyzing matches against your resume...', threshold: 60 },
-          { label: 'Ranking results...', threshold: 90 },
-        ].map((step, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs">
-            <div
-              className={cn(
-                'h-2 w-2 flex-shrink-0 transition-colors',
-                progress > step.threshold
-                  ? 'bg-emerald-400'
-                  : progress > i * 30
-                  ? 'bg-ring animate-pulse'
-                  : 'bg-muted'
-              )}
-            />
-            <span
-              className={cn(
-                'text-muted-foreground',
-                progress > step.threshold && 'text-emerald-400'
-              )}
-            >
-              {step.label}
-            </span>
-          </div>
-        ))}
+
+      {/* Two-Phase Workflow */}
+      <div className="space-y-4">
+        {/* Phase 1: Job Extraction */}
+        <Card className={cn('border-border bg-card transition-colors', !phase1Done && progress > 0 && 'border-ring/50')}>
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <div className={cn(
+                'h-8 w-8 flex items-center justify-center border text-xs font-bold flex-shrink-0',
+                phase1Done ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : progress > 0 ? 'bg-ring/20 text-ring border-ring/30 animate-pulse' : 'bg-muted text-muted-foreground border-border'
+              )}>
+                {phase1Done ? <FiCheck className="h-4 w-4" /> : '1'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className={cn('text-sm font-medium', phase1Done ? 'text-emerald-400' : 'text-foreground')}>
+                  Phase 1: Extract Job Listings
+                </h4>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Job Extractor Agent scrapes the LinkedIn URL and extracts structured data from each posting
+                </p>
+                {!phase1Done && progress > 0 && (
+                  <div className="mt-2 space-y-1.5">
+                    {[
+                      { label: 'Navigating LinkedIn search results...', t: 10 },
+                      { label: 'Extracting job descriptions...', t: 25 },
+                      { label: 'Parsing experience requirements...', t: 35 },
+                    ].map((s, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-[10px]">
+                        <div className={cn('h-1.5 w-1.5', progress > s.t ? 'bg-emerald-400' : progress > s.t - 10 ? 'bg-ring animate-pulse' : 'bg-muted')} />
+                        <span className={cn(progress > s.t ? 'text-emerald-400' : 'text-muted-foreground')}>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Phase 2: Resume Matching */}
+        <Card className={cn('border-border bg-card transition-colors', phase1Done && !phase2Done && 'border-ring/50')}>
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <div className={cn(
+                'h-8 w-8 flex items-center justify-center border text-xs font-bold flex-shrink-0',
+                phase2Done ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : phase1Done ? 'bg-ring/20 text-ring border-ring/30 animate-pulse' : 'bg-muted text-muted-foreground border-border'
+              )}>
+                {phase2Done ? <FiCheck className="h-4 w-4" /> : '2'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className={cn('text-sm font-medium', phase2Done ? 'text-emerald-400' : phase1Done ? 'text-foreground' : 'text-muted-foreground')}>
+                  Phase 2: Match Against Resume
+                </h4>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Resume Match Analyst scores each job description against your skills, experience, and preferences
+                </p>
+                {phase1Done && !phase2Done && (
+                  <div className="mt-2 space-y-1.5">
+                    {[
+                      { label: 'Analyzing skill alignment...', t: 55 },
+                      { label: 'Scoring experience match...', t: 65 },
+                      { label: 'Identifying skill gaps...', t: 75 },
+                      { label: 'Ranking by overall fit...', t: 82 },
+                    ].map((s, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-[10px]">
+                        <div className={cn('h-1.5 w-1.5', progress > s.t ? 'bg-emerald-400' : progress > s.t - 10 ? 'bg-ring animate-pulse' : 'bg-muted')} />
+                        <span className={cn(progress > s.t ? 'text-emerald-400' : 'text-muted-foreground')}>{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Final Step */}
+        <div className="flex items-center gap-2 px-4 text-xs">
+          <div className={cn('h-2 w-2', phase2Done ? 'bg-emerald-400' : 'bg-muted')} />
+          <span className={cn(phase2Done ? 'text-emerald-400 font-medium' : 'text-muted-foreground')}>
+            Generating tabular comparison and ranked results...
+          </span>
+        </div>
       </div>
     </div>
   )

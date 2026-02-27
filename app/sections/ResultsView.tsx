@@ -5,12 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Slider } from '@/components/ui/slider'
 import { Label } from '@/components/ui/label'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
-import { FiExternalLink, FiChevronDown, FiBriefcase, FiMapPin, FiFilter, FiStar } from 'react-icons/fi'
+import {
+  FiExternalLink,
+  FiChevronDown,
+  FiBriefcase,
+  FiMapPin,
+  FiFilter,
+  FiStar,
+  FiGrid,
+  FiList,
+  FiChevronUp,
+  FiArrowUp,
+  FiArrowDown,
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiTarget,
+} from 'react-icons/fi'
 
 interface JobMatch {
   job_title: string
@@ -92,41 +106,60 @@ function formatInline(text: string) {
   )
 }
 
+function getScoreColor(score: number) {
+  if (score >= 80) return 'text-emerald-400'
+  if (score >= 50) return 'text-amber-400'
+  return 'text-red-400'
+}
+
+function getScoreBgColor(score: number) {
+  if (score >= 80) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+  if (score >= 50) return 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+  return 'bg-red-500/20 text-red-400 border-red-500/30'
+}
+
+function getFitBgColor(category: string) {
+  const cat = (category ?? '').toLowerCase()
+  if (cat.includes('excellent')) return 'bg-emerald-500/15 text-emerald-400'
+  if (cat.includes('good')) return 'bg-blue-500/15 text-blue-400'
+  if (cat.includes('partial')) return 'bg-amber-500/15 text-amber-400'
+  if (cat.includes('low')) return 'bg-red-500/15 text-red-400'
+  return 'bg-muted text-muted-foreground'
+}
+
 function ScoreBadge({ score }: { score: number }) {
   const safeScore = typeof score === 'number' ? score : 0
-  let colorClasses = 'bg-red-500/20 text-red-400 border-red-500/30'
-  if (safeScore >= 80) {
-    colorClasses = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-  } else if (safeScore >= 50) {
-    colorClasses = 'bg-amber-500/20 text-amber-400 border-amber-500/30'
-  }
-
   return (
-    <div className={cn('flex items-center justify-center h-12 w-12 border text-sm font-bold flex-shrink-0', colorClasses)}>
+    <div className={cn('flex items-center justify-center h-12 w-12 border text-sm font-bold flex-shrink-0', getScoreBgColor(safeScore))}>
       {safeScore}
     </div>
   )
 }
 
 function FitBadge({ category }: { category: string }) {
-  const cat = (category ?? '').toLowerCase()
-  let colorClasses = 'bg-muted text-muted-foreground'
-  if (cat.includes('excellent')) {
-    colorClasses = 'bg-emerald-500/15 text-emerald-400'
-  } else if (cat.includes('good')) {
-    colorClasses = 'bg-blue-500/15 text-blue-400'
-  } else if (cat.includes('partial')) {
-    colorClasses = 'bg-amber-500/15 text-amber-400'
-  } else if (cat.includes('low')) {
-    colorClasses = 'bg-red-500/15 text-red-400'
-  }
   return (
-    <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0 border-none', colorClasses)}>
+    <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0 border-none', getFitBgColor(category))}>
       {category || 'Unknown'}
     </Badge>
   )
 }
 
+function ScoreBar({ score }: { score: number }) {
+  const safeScore = typeof score === 'number' ? Math.min(100, Math.max(0, score)) : 0
+  let barColor = 'bg-red-400'
+  if (safeScore >= 80) barColor = 'bg-emerald-400'
+  else if (safeScore >= 50) barColor = 'bg-amber-400'
+  return (
+    <div className="flex items-center gap-2 w-full">
+      <div className="flex-1 h-1.5 bg-muted overflow-hidden">
+        <div className={cn('h-full transition-all', barColor)} style={{ width: `${safeScore}%` }} />
+      </div>
+      <span className={cn('text-xs font-bold w-8 text-right', getScoreColor(safeScore))}>{safeScore}</span>
+    </div>
+  )
+}
+
+// ---- Card View ----
 function JobCard({ job }: { job: JobMatch }) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -167,7 +200,6 @@ function JobCard({ job }: { job: JobMatch }) {
                     </Badge>
                   )}
                 </div>
-                {/* Truncated match reasoning */}
                 {job?.key_matches && (
                   <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
                     {job.key_matches}
@@ -180,7 +212,6 @@ function JobCard({ job }: { job: JobMatch }) {
         <CollapsibleContent>
           <div className="px-4 pb-4 space-y-3">
             <Separator className="bg-border" />
-
             {job?.match_reasoning && (
               <div className="space-y-1">
                 <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -189,7 +220,6 @@ function JobCard({ job }: { job: JobMatch }) {
                 {renderMarkdown(job.match_reasoning)}
               </div>
             )}
-
             {job?.key_matches && (
               <div className="space-y-1">
                 <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -198,7 +228,6 @@ function JobCard({ job }: { job: JobMatch }) {
                 {renderMarkdown(job.key_matches)}
               </div>
             )}
-
             {job?.skill_gaps && (
               <div className="space-y-1">
                 <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -207,7 +236,6 @@ function JobCard({ job }: { job: JobMatch }) {
                 {renderMarkdown(job.skill_gaps)}
               </div>
             )}
-
             {job?.posting_url && (
               <a
                 href={job.posting_url}
@@ -226,6 +254,197 @@ function JobCard({ job }: { job: JobMatch }) {
   )
 }
 
+// ---- Table Row Expanded Detail ----
+function TableRowDetail({ job }: { job: JobMatch }) {
+  return (
+    <tr className="bg-popover">
+      <td colSpan={7} className="p-0">
+        <div className="px-4 py-3 space-y-3 border-t border-border/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <FiTarget className="h-3 w-3 text-blue-400" />
+                <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Match Reasoning</Label>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{job?.match_reasoning || 'No reasoning provided'}</p>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <FiCheckCircle className="h-3 w-3 text-emerald-400" />
+                <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Key Matches</Label>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{job?.key_matches || 'None listed'}</p>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <FiAlertTriangle className="h-3 w-3 text-amber-400" />
+                <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Skill Gaps</Label>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{job?.skill_gaps || 'No gaps identified'}</p>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
+// ---- Table View ----
+type TableSortKey = 'score' | 'job_title' | 'company_name' | 'location' | 'fit_category' | 'experience_level'
+
+function ComparisonTable({ matches }: { matches: JobMatch[] }) {
+  const [sortKey, setSortKey] = useState<TableSortKey>('score')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+  const [expandedRow, setExpandedRow] = useState<number | null>(null)
+
+  const handleSort = (key: TableSortKey) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortDir(key === 'score' ? 'desc' : 'asc')
+    }
+  }
+
+  const sortedMatches = useMemo(() => {
+    const arr = [...matches]
+    arr.sort((a, b) => {
+      let cmp = 0
+      switch (sortKey) {
+        case 'score':
+          cmp = (a?.match_score ?? 0) - (b?.match_score ?? 0)
+          break
+        case 'job_title':
+          cmp = (a?.job_title ?? '').localeCompare(b?.job_title ?? '')
+          break
+        case 'company_name':
+          cmp = (a?.company_name ?? '').localeCompare(b?.company_name ?? '')
+          break
+        case 'location':
+          cmp = (a?.location ?? '').localeCompare(b?.location ?? '')
+          break
+        case 'fit_category':
+          cmp = (a?.fit_category ?? '').localeCompare(b?.fit_category ?? '')
+          break
+        case 'experience_level':
+          cmp = (a?.experience_level ?? '').localeCompare(b?.experience_level ?? '')
+          break
+      }
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+    return arr
+  }, [matches, sortKey, sortDir])
+
+  const SortHeader = ({ label, colKey }: { label: string; colKey: TableSortKey }) => (
+    <th
+      className="text-left px-3 py-2.5 text-[10px] text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors select-none whitespace-nowrap"
+      onClick={() => handleSort(colKey)}
+    >
+      <div className="flex items-center gap-1">
+        {label}
+        {sortKey === colKey ? (
+          sortDir === 'asc' ? (
+            <FiArrowUp className="h-3 w-3 text-ring" />
+          ) : (
+            <FiArrowDown className="h-3 w-3 text-ring" />
+          )
+        ) : (
+          <FiChevronDown className="h-2.5 w-2.5 opacity-30" />
+        )}
+      </div>
+    </th>
+  )
+
+  return (
+    <div className="border border-border overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead className="bg-card border-b border-border">
+          <tr>
+            <th className="w-8 px-2 py-2.5" />
+            <SortHeader label="Score" colKey="score" />
+            <SortHeader label="Job Title" colKey="job_title" />
+            <SortHeader label="Company" colKey="company_name" />
+            <SortHeader label="Location" colKey="location" />
+            <SortHeader label="Fit" colKey="fit_category" />
+            <SortHeader label="Level" colKey="experience_level" />
+          </tr>
+        </thead>
+        <tbody>
+          {sortedMatches.map((job, idx) => {
+            const isExp = expandedRow === idx
+            return (
+              <React.Fragment key={`${job?.company_name ?? ''}-${job?.job_title ?? ''}-${idx}`}>
+                <tr
+                  className={cn(
+                    'border-b border-border/50 cursor-pointer transition-colors',
+                    isExp ? 'bg-popover' : 'hover:bg-accent/30'
+                  )}
+                  onClick={() => setExpandedRow(isExp ? null : idx)}
+                >
+                  <td className="px-2 py-2.5">
+                    <FiChevronDown
+                      className={cn(
+                        'h-3.5 w-3.5 text-muted-foreground transition-transform',
+                        isExp && 'rotate-180'
+                      )}
+                    />
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="w-24">
+                      <ScoreBar score={job?.match_score ?? 0} />
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs font-medium text-foreground truncate max-w-[200px]">
+                        {job?.job_title ?? 'Untitled'}
+                      </span>
+                      {job?.posting_url && (
+                        <a
+                          href={job.posting_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex-shrink-0 text-blue-400 hover:text-blue-300"
+                        >
+                          <FiExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="text-xs text-muted-foreground truncate block max-w-[140px]">
+                      {job?.company_name ?? '-'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="text-xs text-muted-foreground truncate block max-w-[140px]">
+                      {job?.location ?? '-'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <Badge
+                      variant="outline"
+                      className={cn('text-[10px] px-1.5 py-0 border-none whitespace-nowrap', getFitBgColor(job?.fit_category ?? ''))}
+                    >
+                      {job?.fit_category || '-'}
+                    </Badge>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="text-xs text-muted-foreground">{job?.experience_level || '-'}</span>
+                  </td>
+                </tr>
+                {isExp && <TableRowDetail job={job} />}
+              </React.Fragment>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+// ---- Main ResultsView ----
 export default function ResultsView({
   rankedMatches,
   totalAnalyzed,
@@ -235,6 +454,7 @@ export default function ResultsView({
   const [sortBy, setSortBy] = useState<'score' | 'company' | 'location'>('score')
   const [scoreThreshold, setScoreThreshold] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table')
 
   const safeMatches = Array.isArray(rankedMatches) ? rankedMatches : []
 
@@ -242,54 +462,73 @@ export default function ResultsView({
     let matches = safeMatches.filter(
       (m) => (typeof m?.match_score === 'number' ? m.match_score : 0) >= scoreThreshold
     )
-
     if (sortBy === 'score') {
-      matches = [...matches].sort(
-        (a, b) => (b?.match_score ?? 0) - (a?.match_score ?? 0)
-      )
+      matches = [...matches].sort((a, b) => (b?.match_score ?? 0) - (a?.match_score ?? 0))
     } else if (sortBy === 'company') {
-      matches = [...matches].sort((a, b) =>
-        (a?.company_name ?? '').localeCompare(b?.company_name ?? '')
-      )
+      matches = [...matches].sort((a, b) => (a?.company_name ?? '').localeCompare(b?.company_name ?? ''))
     } else if (sortBy === 'location') {
-      matches = [...matches].sort((a, b) =>
-        (a?.location ?? '').localeCompare(b?.location ?? '')
-      )
+      matches = [...matches].sort((a, b) => (a?.location ?? '').localeCompare(b?.location ?? ''))
     }
-
     return matches
   }, [safeMatches, sortBy, scoreThreshold])
 
   const safeAvg = typeof averageMatchScore === 'number' ? averageMatchScore : 0
 
+  // Score distribution counts
+  const excellentCount = safeMatches.filter((m) => (m?.match_score ?? 0) >= 80).length
+  const goodCount = safeMatches.filter((m) => (m?.match_score ?? 0) >= 50 && (m?.match_score ?? 0) < 80).length
+  const lowCount = safeMatches.filter((m) => (m?.match_score ?? 0) < 50).length
+
   return (
     <div className="space-y-4">
+      {/* Phase Indicators */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <div className="h-2 w-2 bg-emerald-400" />
+          <span className="text-emerald-400 font-medium">Phase 1: Jobs Extracted</span>
+        </div>
+        <div className="h-px w-4 bg-emerald-400" />
+        <div className="flex items-center gap-1.5">
+          <div className="h-2 w-2 bg-emerald-400" />
+          <span className="text-emerald-400 font-medium">Phase 2: Resume Matched</span>
+        </div>
+        <div className="h-px w-4 bg-emerald-400" />
+        <div className="flex items-center gap-1.5">
+          <FiCheckCircle className="h-3 w-3 text-emerald-400" />
+          <span className="text-emerald-400 font-medium">Complete</span>
+        </div>
+      </div>
+
       {/* Stats Bar */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card className="border-border bg-card">
           <CardContent className="p-3 text-center">
             <p className="text-2xl font-bold text-foreground">{totalAnalyzed ?? 0}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              Jobs Analyzed
-            </p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Jobs Analyzed</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
           <CardContent className="p-3 text-center">
-            <p className={cn('text-2xl font-bold', safeAvg >= 70 ? 'text-emerald-400' : safeAvg >= 50 ? 'text-amber-400' : 'text-red-400')}>
-              {Math.round(safeAvg)}%
-            </p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              Avg Match
-            </p>
+            <p className={cn('text-2xl font-bold', getScoreColor(safeAvg))}>{Math.round(safeAvg)}%</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Avg Match</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border bg-card">
+          <CardContent className="p-3 text-center">
+            <p className="text-2xl font-bold text-emerald-400">{excellentCount}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Excellent (80+)</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border bg-card">
+          <CardContent className="p-3 text-center">
+            <p className="text-2xl font-bold text-amber-400">{goodCount}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Good (50-79)</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
           <CardContent className="p-3 text-center">
             <p className="text-2xl font-bold text-foreground">{filteredMatches.length}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              Showing
-            </p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Showing</p>
           </CardContent>
         </Card>
       </div>
@@ -306,34 +545,62 @@ export default function ResultsView({
         </Card>
       )}
 
-      {/* Filter Bar */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
-          <Button
-            variant={sortBy === 'score' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSortBy('score')}
-            className="h-7 text-xs"
-          >
-            Score
-          </Button>
-          <Button
-            variant={sortBy === 'company' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSortBy('company')}
-            className="h-7 text-xs"
-          >
-            Company
-          </Button>
-          <Button
-            variant={sortBy === 'location' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSortBy('location')}
-            className="h-7 text-xs"
-          >
-            Location
-          </Button>
+      {/* Toolbar: View Toggle + Sort + Filter */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          {/* View Toggle */}
+          <div className="flex items-center border border-border">
+            <Button
+              variant={viewMode === 'table' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('table')}
+              className="h-7 text-xs gap-1 px-2.5"
+            >
+              <FiGrid className="h-3 w-3" />
+              Table
+            </Button>
+            <Button
+              variant={viewMode === 'cards' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('cards')}
+              className="h-7 text-xs gap-1 px-2.5"
+            >
+              <FiList className="h-3 w-3" />
+              Cards
+            </Button>
+          </div>
+
+          {/* Sort (only in card view) */}
+          {viewMode === 'cards' && (
+            <div className="flex items-center gap-1.5 ml-2">
+              <Button
+                variant={sortBy === 'score' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('score')}
+                className="h-7 text-xs"
+              >
+                Score
+              </Button>
+              <Button
+                variant={sortBy === 'company' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('company')}
+                className="h-7 text-xs"
+              >
+                Company
+              </Button>
+              <Button
+                variant={sortBy === 'location' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSortBy('location')}
+                className="h-7 text-xs"
+              >
+                Location
+              </Button>
+            </div>
+          )}
         </div>
+
         <Button
           variant="ghost"
           size="sm"
@@ -341,10 +608,11 @@ export default function ResultsView({
           className="h-7 text-xs gap-1"
         >
           <FiFilter className="h-3 w-3" />
-          Filter
+          Filter {scoreThreshold > 0 && `(${scoreThreshold}%+)`}
         </Button>
       </div>
 
+      {/* Filter Slider */}
       {showFilters && (
         <Card className="border-border bg-card">
           <CardContent className="p-3 space-y-2">
@@ -352,6 +620,11 @@ export default function ResultsView({
               <Label className="text-xs text-muted-foreground">
                 Minimum Score: {scoreThreshold}%
               </Label>
+              {scoreThreshold > 0 && (
+                <Button variant="ghost" size="sm" onClick={() => setScoreThreshold(0)} className="h-6 text-[10px] px-2">
+                  Reset
+                </Button>
+              )}
             </div>
             <Slider
               value={[scoreThreshold]}
@@ -365,23 +638,25 @@ export default function ResultsView({
         </Card>
       )}
 
-      {/* Job Cards */}
-      <div className="space-y-2">
-        {filteredMatches.length === 0 ? (
-          <Card className="border-border bg-card">
-            <CardContent className="p-8 text-center">
-              <FiStar className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                No matches found above the {scoreThreshold}% threshold. Try lowering the filter.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredMatches.map((job, idx) => (
+      {/* Results Display */}
+      {filteredMatches.length === 0 ? (
+        <Card className="border-border bg-card">
+          <CardContent className="p-8 text-center">
+            <FiStar className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">
+              No matches found above the {scoreThreshold}% threshold. Try lowering the filter.
+            </p>
+          </CardContent>
+        </Card>
+      ) : viewMode === 'table' ? (
+        <ComparisonTable matches={filteredMatches} />
+      ) : (
+        <div className="space-y-2">
+          {filteredMatches.map((job, idx) => (
             <JobCard key={`${job?.company_name ?? ''}-${job?.job_title ?? ''}-${idx}`} job={job} />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
