@@ -1,0 +1,8 @@
+UI generation completed successfully.
+
+Files created:
+- /app/nextjs-project/app/page.tsx (main page with ErrorBoundary, state management, agent orchestration)
+- /app/nextjs-project/app/sections/PreferencesPanel.tsx (left sidebar with preferences)
+- /app/nextjs-project/app/sections/InputSection.tsx (resume upload + LinkedIn URL input)
+- /app/nextjs-project/app/sections/ResultsView.tsx (results display with filters and job cards)
+- /app/nextjs-project/app/sections/ChatPanel.tsx (follow-up chat panel)

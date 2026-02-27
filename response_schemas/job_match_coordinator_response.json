@@ -1,0 +1,46 @@
+{
+  "agent_name": "Job Match Coordinator",
+  "agent_id": "69a1a2e794f34c9b935dc48b",
+  "description": "Coordinates the full job matching workflow -- sends LinkedIn URL to extractor, passes extracted jobs + resume + preferences to analyst, aggregates final ranked output",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "ranked_matches": [
+      {
+        "job_title": "string",
+        "company_name": "string",
+        "location": "string",
+        "match_score": "number",
+        "fit_category": "string",
+        "match_reasoning": "string",
+        "skill_gaps": "string",
+        "key_matches": "string",
+        "posting_url": "string",
+        "experience_level": "string"
+      }
+    ],
+    "total_analyzed": "number",
+    "average_match_score": "number",
+    "analysis_summary": "string"
+  },
+  "example_response": {
+    "ranked_matches": [
+      {
+        "job_title": "sample string",
+        "company_name": "sample string",
+        "location": "sample string",
+        "match_score": 0,
+        "fit_category": "sample string",
+        "match_reasoning": "sample string",
+        "skill_gaps": "sample string",
+        "key_matches": "sample string",
+        "posting_url": "sample string",
+        "experience_level": "sample string"
+      }
+    ],
+    "total_analyzed": 0,
+    "average_match_score": 0,
+    "analysis_summary": "sample string"
+  }
+}

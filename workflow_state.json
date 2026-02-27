@@ -1,0 +1,41 @@
+{
+  "agents": {
+    "job_match_coordinator": {
+      "agent_id": "69a1a2e794f34c9b935dc48b",
+      "name": "Job Match Coordinator",
+      "type": "manager",
+      "provider": "OpenAI",
+      "model": "gpt-4.1",
+      "temperature": 0.3,
+      "managed_agents": [
+        "69a1a2d663cead3f400eb169",
+        "69a1a2d6ceaca7d828c03804"
+      ]
+    },
+    "job_extractor_agent": {
+      "agent_id": "69a1a2d663cead3f400eb169",
+      "name": "Job Extractor Agent",
+      "type": "sub-agent",
+      "provider": "OpenAI",
+      "model": "gpt-4.1",
+      "temperature": 0.2
+    },
+    "resume_match_analyst": {
+      "agent_id": "69a1a2d6ceaca7d828c03804",
+      "name": "Resume Match Analyst",
+      "type": "sub-agent",
+      "provider": "Anthropic",
+      "model": "claude-sonnet-4-5",
+      "temperature": 0.4
+    }
+  },
+  "primary_agent_id": "69a1a2e794f34c9b935dc48b",
+  "workflow_type": "manager-subagent",
+  "capabilities": {
+    "image_output": false,
+    "voice": false,
+    "file_output": false,
+    "scheduled": false,
+    "knowledge_base": false
+  }
+}

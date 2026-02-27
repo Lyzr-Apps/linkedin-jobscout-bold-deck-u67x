@@ -1,0 +1,40 @@
+{
+  "agent_name": "Job Extractor Agent",
+  "agent_id": "69a1a2d663cead3f400eb169",
+  "description": "Scrapes the filtered LinkedIn URL, navigates through each job listing, and extracts structured data: job title, company name, location, full description text, experience requirements, and posting URL",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "AgentResponse",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "job_title": { "type": "string" },
+                "company_name": { "type": "string" },
+                "location": { "type": "string" },
+                "description": { "type": "string" },
+                "experience_requirements": { "type": "string" },
+                "posting_url": { "type": "string" }
+              },
+              "required": ["job_title", "company_name", "location", "description", "experience_requirements", "posting_url"],
+              "additionalProperties": false
+            }
+          },
+          "total_jobs_found": { "type": "number" },
+          "extraction_status": { "type": "string" }
+        },
+        "required": ["jobs", "total_jobs_found", "extraction_status"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

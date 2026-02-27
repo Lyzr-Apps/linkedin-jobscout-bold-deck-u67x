@@ -1,0 +1,45 @@
+{
+  "agent_name": "Job Match Coordinator",
+  "agent_id": "69a1a2e794f34c9b935dc48b",
+  "description": "Coordinates the full job matching workflow -- sends LinkedIn URL to extractor, passes extracted jobs + resume + preferences to analyst, aggregates final ranked output",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "AgentResponse",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ranked_matches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "job_title": { "type": "string" },
+                "company_name": { "type": "string" },
+                "location": { "type": "string" },
+                "match_score": { "type": "number" },
+                "fit_category": { "type": "string" },
+                "match_reasoning": { "type": "string" },
+                "skill_gaps": { "type": "string" },
+                "key_matches": { "type": "string" },
+                "posting_url": { "type": "string" },
+                "experience_level": { "type": "string" }
+              },
+              "required": ["job_title", "company_name", "location", "match_score", "fit_category", "match_reasoning", "skill_gaps", "key_matches", "posting_url", "experience_level"],
+              "additionalProperties": false
+            }
+          },
+          "total_analyzed": { "type": "number" },
+          "average_match_score": { "type": "number" },
+          "analysis_summary": { "type": "string" }
+        },
+        "required": ["ranked_matches", "total_analyzed", "average_match_score", "analysis_summary"],
+        "additionalProperties": false
+      }
+    }
+  }
+}
